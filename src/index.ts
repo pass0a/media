@@ -9,7 +9,7 @@ import {
 	uiCombobox,
 	uiProgressBar
 } from '@passoa/libui';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import * as fs from 'fs';
 
 let extlist = [ 'mp4', 'wmv', 'flv' ];
@@ -62,13 +62,14 @@ b3.on('click', () => {
 		x.msgBoxError('路径检查错误', '请确认输出目录是否有效:' + label2.getText());
 		return;
 	}
-	let tmp = exec(
-		'passoa convert.js ' + label1.getText() + ' ' + label2.getText() + ' ' + extlist[combox.getSelected()]
-	);
-	if (tmp.stdout)
-		tmp.stdout.on('data', (data) => {
-			console.log(Buffer.from(data).toString());
-		});
+	let cmd = `passoa ${__dirname}/convert.js ${label1.getText()} ${label2.getText()} ${extlist[combox.getSelected()]}`;
+	let tmp = spawn(cmd);
+	tmp.stdout.on('data', (data) => {
+		console.log('data', Buffer.from(data).toString('binary'));
+	});
+	tmp.stderr.on('data', (data) => {
+		console.log('err', Buffer.from(data).toString('binary'));
+	});
 });
 // g.append(b1, 0, 0, 1, 1, true, uiAlign.uiAlignFill, true, uiAlign.uiAlignFill);
 // g.append(b2, 0, 1, 1, 1, true, uiAlign.uiAlignFill, true, uiAlign.uiAlignFill);
