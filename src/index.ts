@@ -54,21 +54,30 @@ b2.on('click', () => {
 	// });
 });
 b3.on('click', () => {
-	if (!fs.existsSync(label1.getText())) {
-		x.msgBoxError('路径检查错误', '请确认处理目录是否有效:' + label1.getText());
+	if (!fs.existsSync(label1.getText()) || !fs.existsSync(label2.getText())) {
+		x.msgBoxError('路径检查错误', '请确认处理和输出目录是否有效!');
 		return;
 	}
-	if (!fs.existsSync(label2.getText())) {
-		x.msgBoxError('路径检查错误', '请确认输出目录是否有效:' + label2.getText());
+	let src = fs.statSync(label1.getText());
+	let dst = fs.statSync(label2.getText());
+	if (!src.isDirectory() || !dst.isDirectory()) {
+		x.msgBoxError('路径检查错误', '请确认处理和输出目录是否有效!');
 		return;
 	}
+	b3.disable();
+	b4.disable();
+	progress.setValue(100);
 	let cmd = `passoa ${__dirname}/convert.js ${label1.getText()} ${label2.getText()} ${extlist[combox.getSelected()]}`;
 	let tmp = spawn(cmd);
 	tmp.stdout.on('data', (data) => {
-		console.log('data', Buffer.from(data).toString('binary'));
+		//console.log('data', Buffer.from(data).toString());
 	});
 	tmp.stderr.on('data', (data) => {
-		console.log('err', Buffer.from(data).toString('binary'));
+		//console.log('err', Buffer.from(data).toString());
+	});
+	tmp.on('exit', () => {
+		b3.enable();
+		b4.enable();
 	});
 });
 // g.append(b1, 0, 0, 1, 1, true, uiAlign.uiAlignFill, true, uiAlign.uiAlignFill);
