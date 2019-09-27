@@ -48,7 +48,11 @@ steps:
     workingDir: ./
     verbose: false
     customCommand: 'run pm-msvc'
-
+- script: |
+   ls tmp
+   ls node_modules/@passoa
+  displayName: 'show debuginfo'
+  
 - task: Npm@1
   displayName: 'npm custom'
   inputs:
@@ -56,11 +60,6 @@ steps:
     workingDir: ./
     verbose: false
     customCommand: 'run build'
-- script: |
-   ls tmp
-   ls node_modules/@passoa
-  displayName: 'install node_mudules/@passoa'
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - script: |
    cp node_modules/@passoa/ depends/passoa/msvc/node_modules/@passoa/ -rf
