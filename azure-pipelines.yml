@@ -31,7 +31,7 @@ steps:
    curl -L -o ffmpeg.zip https://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-latest-win32-shared.zip
    7z x ffmpeg.zip -r -o./ -y
    ls
-   cp ffmpeg-latest-win32-shared/ depends/ffmpeg/ -r
+   cp ffmpeg-latest-win32-shared/ depends/ffmpeg/ -rf
 
   displayName: 'install pcanbase'
 
@@ -56,9 +56,14 @@ steps:
     workingDir: ./
     verbose: false
     customCommand: 'run build'
+- script: |
+   ls tmp
+   ls node_modules/@passoa
+  displayName: 'install node_mudules/@passoa'
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - script: |
-   cp service/node_modules/@passoa/ depends/passoa/msvc/node_modules/@passoa/ -rf
+   cp node_modules/@passoa/ depends/passoa/msvc/node_modules/@passoa/ -rf
   displayName: 'install node_mudules/@passoa'
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
 
