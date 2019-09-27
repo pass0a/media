@@ -48,10 +48,6 @@ steps:
     workingDir: ./
     verbose: false
     customCommand: 'run pm-msvc'
-- script: |
-   ls tmp
-   ls node_modules/@passoa
-  displayName: 'show debuginfo'
   
 - task: Npm@1
   displayName: 'npm custom'
