@@ -72,7 +72,7 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: 'RevealSetup.exe'
+    rootFolderOrFile: 'MediaSetup.exe'
     includeRootFolder: false
     archiveType: '7z'
     archiveFile: '$(Build.ArtifactStagingDirectory)/Media-$(Build.SourceBranchName)-$(Build.BuildId).7z'
