@@ -30,7 +30,8 @@ steps:
 - script: |
    curl -L -o ffmpeg.zip https://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-latest-win32-shared.zip
    7z x ffmpeg.zip -r -o./ -y
-   cp ffmpeg-latest-win32-shared/ depends/ffmpeg/
+   ls
+   cp ffmpeg-latest-win32-shared/ depends/ffmpeg/ -r
 
   displayName: 'install pcanbase'
 
