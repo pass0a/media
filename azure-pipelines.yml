@@ -47,7 +47,7 @@ steps:
     command: custom
     workingDir: ./
     verbose: false
-    customCommand: 'run pm'
+    customCommand: 'run pm-msvc'
 
 - task: Npm@1
   displayName: 'npm custom'
