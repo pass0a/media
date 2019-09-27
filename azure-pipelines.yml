@@ -52,15 +52,7 @@ steps:
   displayName: 'npm custom'
   inputs:
     command: custom
-    workingDir: service
-    verbose: false
-    customCommand: 'run build'
-
-- task: Npm@1
-  displayName: 'npm custom'
-  inputs:
-    command: custom
-    workingDir: views
+    workingDir: ./
     verbose: false
     customCommand: 'run build'
 
@@ -72,14 +64,7 @@ steps:
 
 - task: nsis@1
   inputs:
-    scriptFile: 'reveal.nsi'
-    justInclude: 'no'
-    includeMorePlugins: 'no'
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
-
-- task: nsis@1
-  inputs:
-    scriptFile: 'poseidon.nsi'
+    scriptFile: 'media.nsi'
     justInclude: 'no'
     includeMorePlugins: 'no'
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -89,16 +74,7 @@ steps:
     rootFolderOrFile: 'RevealSetup.exe'
     includeRootFolder: false
     archiveType: '7z'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/Reveal-$(Build.SourceBranchName)-$(Build.BuildId).7z'
-    replaceExistingArchive: true
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
-
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: 'PoseidonSetup.exe'
-    includeRootFolder: false
-    archiveType: '7z'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/Poseidon-$(Build.SourceBranchName)-$(Build.BuildId).7z'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/Media-$(Build.SourceBranchName)-$(Build.BuildId).7z'
     replaceExistingArchive: true
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
 
