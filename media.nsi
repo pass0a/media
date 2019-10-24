@@ -30,7 +30,7 @@
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
 !define MUI_FINISHPAGE_RUN "$INSTDIR\passoa.exe"
-!define MUI_FINISHPAGE_RUN_PARAMETERS "$\"$INSTDIR\run.js$\""
+!define MUI_FINISHPAGE_RUN_PARAMETERS "$\"$INSTDIR\index.js$\""
 !define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\License.txt"
 
 !insertmacro MUI_PAGE_FINISH
@@ -44,10 +44,14 @@
 ; MUI end ------
 
 
-; ��װVC����
+; 安装VC环境
 Function InstallVC
-   ExecWait "$INSTDIR\vcredist_x86.exe"   ;�������ڣ�ִ�о�Ĭ��װ
+   ExecWait "$INSTDIR\vcredist_x86.exe"   ;若不存在，执行静默安装
    Delete "$INSTDIR\vcredist_x86.exe"
+FunctionEnd
+Function unlockApp
+   ExecWait "$INSTDIR\passoa.exe $INSTDIR\sn.js"   ;若不存在，执行静默安装
+   Delete "$INSTDIR\sn.js"
 FunctionEnd
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
@@ -57,20 +61,21 @@ InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
-Section "�������" SEC01
+Section "主体程序" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
+  File ".\sn.js"
   File ".\License.txt"
   File ".\depends\vcredist_x86.exe"
   File /r "dist\"
   File /r ".\depends\ffmpeg"
   File /r ".\depends\passoa\msvc\"
   CreateDirectory "$SMPROGRAMS\Media"
-  CreateShortCut "$SMPROGRAMS\Media\Media.lnk" "$INSTDIR\passoa.exe" "$\"$INSTDIR\run.js$\""
-  CreateShortCut "$DESKTOP\Media.lnk" "$INSTDIR\passoa.exe" "$\"$INSTDIR\run.js$\""
+  CreateShortCut "$SMPROGRAMS\Media\Media.lnk" "$INSTDIR\passoa.exe" "$\"$INSTDIR\index.js$\""
+  CreateShortCut "$DESKTOP\Media.lnk" "$INSTDIR\passoa.exe" "$\"$INSTDIR\index.js$\""
 SectionEnd
 
-Section "����ϵͳ·��" SEC02
+Section "加入系统路径" SEC02
 ;;  File /r "..\output\node_modules\"
 ;;  Push "$INSTDIR"
 ;;  Call AddToPath
@@ -93,12 +98,13 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
   WriteRegDWORD HKLM "${PRODUCT_DIR_REGKEY}" "Installed" 1
+  call unlockApp
 SectionEnd
 
 ; Section descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "��ϵͳ���������"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "���뵽ϵͳ·����"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "本系统的主体程序"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "加入到系统路径中"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ;--------------------------------------------------------------------
@@ -281,11 +287,11 @@ FunctionEnd
 
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) �ѳɹ��ش���ļ�����Ƴ���"
+  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) 已成功地从你的计算机移除。"
 FunctionEnd
 
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "��ȷʵҪ��ȫ�Ƴ� $(^Name) ���估���е������" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "你确实要完全移除 $(^Name) ，其及所有的组件？" IDYES +2
   Abort
 FunctionEnd
 
@@ -321,13 +327,13 @@ Function .onInit
                         ; '0' if everything closed normally, and '-1' if some error occurred.
 
         ;Delete $PLUGINSDIR\splash.bmp
-  ;��ֹ��ΰ�װʵ�� start
+  ;禁止多次安装实例 start
   ReadRegDWORD $0 HKLM '${PRODUCT_DIR_REGKEY}' "Installed"
   IntCmp $0 +1 +4
-   MessageBox MB_OK|MB_USERICON '$(^Name) �Ѱ�װ�ڼ�����С��������°�װ����ж�����еİ�װ��'
+   MessageBox MB_OK|MB_USERICON '$(^Name) 已安装在计算机中。如需重新安装，请卸载已有的安装。'
   Quit
   nop
- ;��ֹ��ΰ�װʵ�� end
+ ;禁止多次安装实例 end
 FunctionEnd
 
 
