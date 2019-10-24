@@ -3,15 +3,18 @@ const path = require('path');
 const fs = require('fs-extra');
 let opt_dist = 'dist';
 let opt_watch = false;
-fs
-	.copy('src/sn.js', path.resolve(__dirname, `${distfolder}/sn.js`))
-	.then(() => {
-		console.log('copy run.js success!');
-	})
-	.catch((err) => {
-		console.error(err);
-	});
-module.exports = (env) => {
+if (process.env.opt == 'build') {
+	fs
+		.copy('src/sn.js', path.resolve(__dirname, `${opt_dist}/sn.js`))
+		.then(() => {
+			console.log('copy run.js success!');
+		})
+		.catch((err) => {
+			console.error(err);
+		});
+}
+
+module.exports = () => {
 	if (process.env.opt == 'dev') {
 		opt_watch = true;
 		opt_dist = 'dist';
