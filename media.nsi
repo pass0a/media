@@ -64,7 +64,6 @@ ShowUnInstDetails show
 Section "主体程序" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  File ".\sn.js"
   File ".\License.txt"
   File ".\depends\vcredist_x86.exe"
   File /r "dist\"
